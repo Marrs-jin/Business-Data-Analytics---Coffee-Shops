@@ -35,161 +35,143 @@ import calendar
 
 # ### Manual Entry Inventory Costs
 
+# =============================================================================
+# INGREDIENT COST CONFIGURATION
+# =============================================================================
+# Real cost values have been redacted from this public version.
+#
+# In the original implementation, each ingredient is defined with two variables:
+#   <item>_size   — quantity per purchase unit (grams, oz, count, etc.)
+#   <item>_price  — cost per purchase unit in dollars
+#
+# Derived per-unit costs are then calculated, e.g.:
+#   whole_milk_gallon_price = whole_milk_box_price / whole_milk_box_size
+#
+# These variables feed directly into the inventory DataFrame and recipe costing
+# logic below. To run this script, replace the example values with your
+# actual supplier costs (or load them from a config file / secrets manager).
+# =============================================================================
+
+# --- EXAMPLE VALUES (illustrative only — not real costs) ---
+
 ## COFFEE ##
+coffeeBag_size  = 2000   # g per bag
+coffeeBag_price = 0.00   # [REDACTED]
 
-coffeeBag_size = 2268 #g
-coffeeBag_price = 60
+## PAPER CUPS & LIDS ##
+hot_cup_8oz_box_size   = 1000   # units per box
+hot_cup_8oz_box_price  = 0.00   # [REDACTED]
+hot_cup_10oz_box_size  = 1000
+hot_cup_10oz_box_price = 0.00   # [REDACTED]
+hot_cup_16oz_box_size  = 1000
+hot_cup_16oz_box_price = 0.00   # [REDACTED]
+iced_cup_16oz_box_size  = 1000
+iced_cup_16oz_box_price = 0.00  # [REDACTED]
+hot_lid_8oz_box_size    = 1200
+hot_lid_8oz_box_price   = 0.00  # [REDACTED]
+hot_lid_16oz_box_size   = 1200
+hot_lid_16oz_box_price  = 0.00  # [REDACTED]
+iced_lid_16oz_box_size  = 1000
+iced_lid_16oz_box_price = 0.00  # [REDACTED]
+sleeve_box_size  = 400
+sleeve_box_price = 0.00         # [REDACTED]
 
-## PAPER ##
-
-hot_cup_8oz_box_size = 1000 #units
-hot_cup_8oz_box_price = 40
-
-hot_cup_10oz_box_size = 1000 #units
-hot_cup_10oz_box_price = 45
-
-hot_cup_16oz_box_size = 1000 #units
-hot_cup_16oz_box_price = 65
-
-iced_cup_16oz_box_size = 1000 #units
-iced_cup_16oz_box_price = 65
-
-hot_lid_8oz_box_size = 1200 #units
-hot_lid_8oz_box_price = 45
-
-hot_lid_16oz_box_size = 1200 #units
-hot_lid_16oz_box_price = 45
-
-iced_lid_16oz_box_size = 1000 #units
-iced_lid_16oz_box_price = 35
-
-## Numbers are wrong ##
-sleeve_box_size = 400 #units
-sleeve_box_price = 15
-
-## MILK/RETAIL DRINKS/SUGAR/SYRUPS ##
-
-whole_milk_box_size = 4 #bags
-whole_milk_box_price = 20
-whole_milk_gallon_size = 128 #oz
+## MILK (whole, oat, almond, etc.) ##
+whole_milk_box_size     = 4     # gallons per case
+whole_milk_box_price    = 0.00  # [REDACTED]
+whole_milk_gallon_size  = 128   # oz
 whole_milk_gallon_price = whole_milk_box_price / whole_milk_box_size
 
-## Add these to menuPrices ##
-
-skim_milk_size = 64 #units
-skim_milk_price = 2
-
-twoPercent_milk_size = 64 #units
-twoPercent_milk_price = 3
-
-halfhalf_milk_size = 32 #units
-halfhalf_milk_price = 3
-# end add ##
-
-## Oat numbers are wrong ##
-oat_milk_box_size = 6 #bags
-oat_milk_box_price = 20
-oat_milk_carton_size = 32 #oz
+oat_milk_box_size     = 6       # cartons per case
+oat_milk_box_price    = 0.00    # [REDACTED]
+oat_milk_carton_size  = 32      # oz
 oat_milk_carton_price = oat_milk_box_price / oat_milk_box_size
 
-almond_milk_box_size = 6 #bags
-almond_milk_box_price = 20
-almond_milk_carton_size = 32 #oz
+almond_milk_box_size     = 6
+almond_milk_box_price    = 0.00 # [REDACTED]
+almond_milk_carton_size  = 32
 almond_milk_carton_price = almond_milk_box_price / almond_milk_box_size
 
-sugar_bag_size = 1814.37 #g
-sugar_bag_price = 5
+skim_milk_size   = 64
+skim_milk_price  = 0.00         # [REDACTED]
+twoPercent_milk_size  = 64
+twoPercent_milk_price = 0.00    # [REDACTED]
+halfhalf_milk_size    = 32
+halfhalf_milk_price   = 0.00    # [REDACTED]
 
-#Add these to menu_PricesAndQuantities
-still_water_box_size = 24 #bottles
-still_water_box_price = 10
-still_water_bottle_size = 16.9 #oz
-still_water_bottle_price = still_water_box_price / still_water_box_size
+## SUGAR & SYRUPS ##
+sugar_bag_size   = 1814  # g
+sugar_bag_price  = 0.00  # [REDACTED]
 
-sparkling_water_box_size = 24 #bottles
-sparkling_water_box_price = 30
-sparkling_water_bottle_size = 16.9 #oz
-sparkling_water_bottle_price = sparkling_water_box_price / sparkling_water_box_size
+# Syrup bottles (size in oz; flavors: vanilla, caramel, hazelnut, lavender, pistachio, mocha, maple)
+vanilla_syrup_bottle_size   = 33
+vanilla_syrup_bottle_price  = 0.00  # [REDACTED]
+caramel_syrup_bottle_size   = 33
+caramel_syrup_bottle_price  = 0.00  # [REDACTED]
+hazelnut_syrup_bottle_size  = 33
+hazelnut_syrup_bottle_price = 0.00  # [REDACTED]
+lavender_syrup_bottle_size  = 33
+lavender_syrup_bottle_price = 0.00  # [REDACTED]
+pistachio_syrup_bottle_size  = 33
+pistachio_syrup_bottle_price = 0.00 # [REDACTED]
+mocha_syrup_bottle_size   = 64
+mocha_syrup_bottle_price  = 0.00    # [REDACTED]
+maple_syrup_bottle_size   = 128
+maple_syrup_bottle_price  = 0.00    # [REDACTED]
+whipped_cream_bottle_size  = 48
+whipped_cream_bottle_price = 0.00   # [REDACTED]
 
-orange_juice_box_size = 6 #bottles
-orange_juice_box_price = 15
-orange_juice_bottle_size = 12 #oz
-orange_juice_bottle_price = orange_juice_box_price / orange_juice_box_size
+## RETAIL DRINKS (still water, sparkling, OJ, lemonade, apple juice) ##
+still_water_box_size      = 24
+still_water_box_price     = 0.00    # [REDACTED]
+still_water_bottle_size   = 16.9
+still_water_bottle_price  = still_water_box_price / still_water_box_size
 
-lemonade_box_size = 6 #bottles
-lemonade_box_price = 10
-lemonade_bottle_size = 12 #oz
-lemonade_bottle_price = lemonade_box_price / lemonade_box_size
+sparkling_water_box_size      = 24
+sparkling_water_box_price     = 0.00 # [REDACTED]
+sparkling_water_bottle_size   = 16.9
+sparkling_water_bottle_price  = sparkling_water_box_price / sparkling_water_box_size
 
-apple_juice_box_size = 12 #bottles
-apple_juice_box_price = 20
-apple_juice_bottle_size = 8 #oz
-apple_juice_bottle_price = apple_juice_box_price / apple_juice_box_size
+orange_juice_box_size      = 6
+orange_juice_box_price     = 0.00   # [REDACTED]
+orange_juice_bottle_size   = 12
+orange_juice_bottle_price  = orange_juice_box_price / orange_juice_box_size
 
-## end add these ##
+lemonade_box_size      = 6
+lemonade_box_price     = 0.00       # [REDACTED]
+lemonade_bottle_size   = 12
+lemonade_bottle_price  = lemonade_box_price / lemonade_box_size
 
-vanilla_syrup_bottle_size = 33.814 #oz
-vanilla_syrup_bottle_price = 10
+apple_juice_box_size      = 12
+apple_juice_box_price     = 0.00    # [REDACTED]
+apple_juice_bottle_size   = 8
+apple_juice_bottle_price  = apple_juice_box_price / apple_juice_box_size
 
-caramel_syrup_bottle_size = 33.814 #oz
-caramel_syrup_bottle_price = 10
-
-hazelnut_syrup_bottle_size = 33.814 #oz
-hazelnut_syrup_bottle_price = 10
-
-lavender_syrup_bottle_size = 33.814 #oz
-lavender_syrup_bottle_price = 10
-
-pistachio_syrup_bottle_size = 33.814 #oz
-pistachio_syrup_bottle_price = 10
-
-mocha_syrup_bottle_size = 64 #oz
-mocha_syrup_bottle_price = 20
-
-maple_syrup_bottle_size = 128 #oz
-maple_syrup_bottle_price = 70
-
-whipped_cream_bottle_size = 48 #oz
-whipped_cream_bottle_price = 3
-
-## numbers made up ##
-chocolate_box_size = 300 #pieces
-chocolate_box_price = 30
-
-##numbers made up
-coldbrew_carton_size = 32 #oz
-coldbrew_carton_price = 10
-
-chai_box_size = 20 #bags
-chai_box_price = 20
-chai_bag_size = 1 #bag
-chai_bag_price = chai_box_price / chai_box_size
-
-matcha_bag_size = 150 #g
-matcha_bag_price = 15
-
-earlGray_bag_size = 300 #g
-earlGray_bag_price = 40
-
-jasminePearls_bag_size = 300 #g
-jasminePearls_bag_price = 40
-
-whitePeach_bag_size = 300 #g
-whitePeach_bag_price = 40
-
-clarityMushroom_bag_size = 300 #g
-clarityMushroom_bag_price = 40
-
-upliftMushroom_bag_size = 300 #g
-upliftMushroom_bag_price = 40
-
-## AFFOGATO ##
-affogato_carton_size = 64 #oz
-affogato_carton_price = 20
-
-## EL PRINCIPITO ##
-cookie_cup_box_size = 24 #pieces
-cookie_cup_box_price = 50
+## SPECIALTY INGREDIENTS (chocolate, cold brew, chai, matcha, teas, mushroom blends) ##
+chocolate_box_size   = 300
+chocolate_box_price  = 0.00  # [REDACTED]
+coldbrew_carton_size  = 32
+coldbrew_carton_price = 0.00 # [REDACTED]
+chai_box_size   = 20
+chai_box_price  = 0.00       # [REDACTED]
+chai_bag_size   = 1
+chai_bag_price  = chai_box_price / chai_box_size
+matcha_bag_size  = 150
+matcha_bag_price = 0.00      # [REDACTED]
+earlGray_bag_size  = 300
+earlGray_bag_price = 0.00    # [REDACTED]
+jasminePearls_bag_size  = 300
+jasminePearls_bag_price = 0.00  # [REDACTED]
+whitePeach_bag_size  = 300
+whitePeach_bag_price = 0.00     # [REDACTED]
+clarityMushroom_bag_size  = 300
+clarityMushroom_bag_price = 0.00 # [REDACTED]
+upliftMushroom_bag_size   = 300
+upliftMushroom_bag_price  = 0.00 # [REDACTED]
+affogato_carton_size  = 64
+affogato_carton_price = 0.00     # [REDACTED]
+cookie_cup_box_size   = 24
+cookie_cup_box_price  = 0.00     # [REDACTED]
 
 # ### Purchased Inventory: Into a Dataframe "inventory_QuantityAndCosts"
 
