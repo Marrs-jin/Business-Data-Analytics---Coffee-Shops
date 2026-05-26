@@ -54,4 +54,4 @@ this repository. [Claude](https://claude.ai) (Anthropic) was used to:
 - Generate the embedded chart outputs against real data
 - Upload and document the project on GitHub
 
-The analysis logic, functions, and findings are entirely the original author's work.
+The analysis logic, functions, and findings are my original work.
