@@ -37,3 +37,21 @@ The pipeline handles:
 - Monthly sales exports (`menu-breakdown-*.csv`)
 - Itemized transaction data (`ItemSelectionDetails-*.csv`)
 - Inventory/recipe Excel workbooks
+
+> **Note on example outputs:** Charts embedded in `analysis_showcase.ipynb` were
+> generated from real sales data, then scaled by a constant factor. Values shown
+> do not represent actual sales figures.
+
+## About This Repository
+
+The original analysis was written in [Deepnote](https://deepnote.com) prior to
+this repository. [Claude](https://claude.ai) (Anthropic) was used to:
+
+- Convert the Deepnote `.deepnote` export into standard `.py` modules and a
+  `.ipynb` notebook
+- Anonymize sensitive business data (credentials, exact cost figures) for
+  public sharing
+- Generate the embedded chart outputs against real data
+- Upload and document the project on GitHub
+
+The analysis logic, functions, and findings are entirely the original author's work.
